@@ -1,7 +1,9 @@
-package edu.galileo.android.androidchat;
+package edu.galileo.android.androidchat.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import edu.galileo.android.androidchat.R;
 
 public class LoginActivity extends AppCompatActivity {
 
