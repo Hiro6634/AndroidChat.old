@@ -42,4 +42,33 @@ public class FirebaseHelper {
 
         return email;
     }
+
+    public Firebase getUserReference( String email ){
+        Firebase userReference = null;
+        if( email != null){
+            String emailKey = email.replace(".", "_");
+            userReference = dataReference.getRoot().child(USERS_PATH).child(emailKey);
+        }
+        return userReference;
+    }
+
+    public Firebase getMyUserReference(){
+        return getUserReference(getAuthUserEmail());
+    }
+
+    public Firebase getContactsReference(String email){
+        return getUserReference(email).child(CONTACTS_PATH);
+    }
+
+    public Firebase getMyContactsReference(){
+        return getContactsReference(getAuthUserEmail());
+    }
+
+    public Firebase getOneContactReference( String mainEmail,String childEmail  ){
+        String childKey = childEmail.replace(".", "_");
+        return getUserReference(mainEmail).child(CONTACTS_PATH).child(childKey);
+    }
+
+//    public Firebase getChatsReference(String receiver){
+//    }
 }
