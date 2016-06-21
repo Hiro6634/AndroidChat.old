@@ -1,4 +1,4 @@
-package edu.galileo.android.androidchat.activities;
+package edu.galileo.android.androidchat.login;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

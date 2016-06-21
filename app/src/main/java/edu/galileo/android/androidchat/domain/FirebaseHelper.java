@@ -1,6 +1,4 @@
-package edu.galileo.android.androidchat.models;
-
-import android.util.StringBuilderPrinter;
+package edu.galileo.android.androidchat.domain;
 
 import com.firebase.client.AuthData;
 import com.firebase.client.DataSnapshot;
@@ -10,7 +8,6 @@ import com.firebase.client.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * Created by Hiro on 21/06/2016.
