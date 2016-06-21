@@ -63,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login.button.signup"
-        android:id="@+id/btnSignon"
+        android:id="@+id/btnSignup"
         android:layout_alignTop="@+id/button"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
