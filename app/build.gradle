@@ -35,4 +35,5 @@ dependencies {
 
     compile "com.jakewharton:butterknife:$rootProject.ext.butterknifeVersion"
     compile "com.firebase:firebase-client-android:$rootProject.ext.firebaseVersion"
+    compile "de.greenrobot:eventbus:$rootProject.ext.eventbusVersion"
 }

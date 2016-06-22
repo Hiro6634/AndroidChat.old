@@ -31,4 +31,5 @@ ext{
     supportLibraryVersion = '23.4.0'
     butterknifeVersion = '7.0.1'
     firebaseVersion = '2.5.0+'
+    eventbusVersion = '2.4.0'
 }
