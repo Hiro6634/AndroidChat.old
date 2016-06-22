@@ -9,7 +9,7 @@ public class LoginPresenterImpl implements LoginPresenter {
 
     LoginPresenterImpl( LoginView loginView ){
         this.loginView = loginView;
-//        this.loginInteractor = new
+        this.loginInteractor = new LoginInteractorImpl();
     }
     @Override
     public void onDestroy() {
