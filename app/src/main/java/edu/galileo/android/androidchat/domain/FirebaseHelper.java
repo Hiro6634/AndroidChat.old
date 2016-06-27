@@ -9,6 +9,8 @@ import com.firebase.client.ValueEventListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.galileo.android.androidchat.entities.User;
+
 /**
  * Created by Hiro on 21/06/2016.
  */
@@ -99,7 +101,7 @@ public class FirebaseHelper {
     }
 
     public void signOff(){
-        notifyContactsOnlineConnectionChange(false, true);
+        notifyContactsOnlineConnectionChange(User.OFFLINE, true);
     }
 
     private void notifyContactsOnlineConnectionChange(final boolean online, final boolean signoff) {
