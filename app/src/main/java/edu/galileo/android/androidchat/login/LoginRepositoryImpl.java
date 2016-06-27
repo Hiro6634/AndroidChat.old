@@ -7,6 +7,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.firebase.client.snapshot.BooleanNode;
+
+import java.util.Map;
 
 import edu.galileo.android.androidchat.domain.FirebaseHelper;
 import edu.galileo.android.androidchat.entities.User;
@@ -27,6 +30,22 @@ public class LoginRepositoryImpl implements LoginRepository {
         this.helper = FirebaseHelper.getInstance();
         this.dataReference = helper.getDataReference();
         this.myUserReference = helper.getMyUserReference();
+    }
+
+    @Override
+    public void signUp(final String email, final String password) {
+        dataReference.createUser( email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> stringObjectMap) {
+                signIn(email, password);
+                postEvent(LoginEvent.onSignUpSuccess);
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                postEvent(LoginEvent.onSignUpError, firebaseError.getMessage());
+            }
+        });
     }
 
     @Override
@@ -60,11 +79,6 @@ public class LoginRepositoryImpl implements LoginRepository {
                 postEvent( LoginEvent.onSignInError, firebaseError.getMessage());
             }
         });
-    }
-
-    @Override
-    public void signUp(String email, String password) {
-        postEvent( LoginEvent.onSignUpSuccess);
     }
 
     @Override
