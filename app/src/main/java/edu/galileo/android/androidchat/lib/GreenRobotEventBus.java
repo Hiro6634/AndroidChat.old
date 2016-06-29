@@ -4,7 +4,7 @@ package edu.galileo.android.androidchat.lib;
  * Created by Hiro on 22/06/2016.
  */
 public class GreenRobotEventBus implements EventBus {
-    private de.greenrobot.event.EventBus eventBus;
+    private org.greenrobot.eventbus.EventBus eventBus;
     private static class SingletonHolder{
         private static final GreenRobotEventBus INSTANCE = new GreenRobotEventBus();
     }
@@ -14,7 +14,7 @@ public class GreenRobotEventBus implements EventBus {
     }
 
     public GreenRobotEventBus(){
-        this.eventBus = de.greenrobot.event.EventBus.getDefault();
+        this.eventBus = org.greenrobot.eventbus.EventBus.getDefault();
     }
 
     @Override

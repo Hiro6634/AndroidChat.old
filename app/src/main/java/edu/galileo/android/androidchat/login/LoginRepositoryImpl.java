@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
@@ -105,24 +106,13 @@ public class LoginRepositoryImpl implements LoginRepository {
 //    }
 
     @Override
-    public void signIn(String email, String password) {{
+    public void signIn(String email, String password) {
         try {
             FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            myUserReference = helper.getMyUserReference();
-                            myUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    initSignIn(dataSnapshot);
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                    postEvent(LoginEvent.onSignInError, databaseError.getMessage());
-                                }
-                            });
+                            initSignInOld();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -136,16 +126,36 @@ public class LoginRepositoryImpl implements LoginRepository {
         }
     }
 
- //   @Override
- //   public void checkSession() {
- //       postEvent( LoginEvent.onFailedToRecoverSession);
- //   }
+    @Override
+    public void checkSession() {
+        if(FirebaseAuth.getInstance().getCurrentUser() != null){
+            initSignInOld();
+        }else {
+            postEvent(LoginEvent.onFailedToRecoverSession);
+        }
+    }
 
-        //TODO: Completar
     @Override
     public void checkAlreadyAuthenticated(){
+        if( FirebaseAuth.getInstance().getCurrentUser() != null){
+            myUserReference = helper.getMyUserReference();
+            myUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    initSignIn(dataSnapshot);
+                }
 
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    postEvent(LoginEvent.onSignInError, databaseError.getMessage());
+                }
+            });
         }
+        else{
+            postEvent(LoginEvent.onFailedToRecoverSession);
+        }
+    }
+
     private void initSignIn(DataSnapshot dataSnapshot) {
         User currentUser = dataSnapshot.getValue(User.class);
 
@@ -156,10 +166,32 @@ public class LoginRepositoryImpl implements LoginRepository {
         postEvent(LoginEvent.onSignInSuccess);
     }
 
+    private void initSignInOld(){
+        myUserReference = FirebaseDatabase.getInstance().getReference();
+        myUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User currentUser = dataSnapshot.getValue(User.class);
+
+                if( currentUser == null ){
+                    registerNewUser();
+                }
+                helper.changeUserConnectionStatus(User.ONLINE);
+                postEvent(LoginEvent.onSignInSuccess);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                postEvent(LoginEvent.onSignInError, databaseError.getMessage());
+            }
+        });
+    }
+
     private void registerNewUser() {
         String email = helper.getAuthUserEmail();
         if(email != null){
-            User currentUser = new User( email, true, null );
+            User currentUser = new User();
+            currentUser.setEmail(email);
             myUserReference.setValue(currentUser);
         }
     }
