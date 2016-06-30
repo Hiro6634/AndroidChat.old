@@ -17,7 +17,7 @@ public class LoginPresenterImpl implements LoginPresenter {
     private LoginView loginView;
     private LoginInteractor loginInteractor;
 
-    LoginPresenterImpl( LoginView loginView ){
+    public LoginPresenterImpl( LoginView loginView ){
         this.loginView = loginView;
         this.loginInteractor = new LoginInteractorImpl();
         this.eventBus = GreenRobotEventBus.getInstance();

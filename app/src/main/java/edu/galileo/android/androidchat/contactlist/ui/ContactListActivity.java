@@ -1,4 +1,4 @@
-package edu.galileo.android.androidchat.contactlist;
+package edu.galileo.android.androidchat.contactlist.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
