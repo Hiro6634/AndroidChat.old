@@ -13,7 +13,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.galileo.android.androidchat.R;
+import edu.galileo.android.androidchat.domain.AvatarHelper;
 import edu.galileo.android.androidchat.entities.User;
+import edu.galileo.android.androidchat.lib.ImageLoader;
 
 /**
  * Created by Hiro on 30/06/2016.
@@ -21,17 +23,17 @@ import edu.galileo.android.androidchat.entities.User;
 
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
     private List<User> contactList;
-    private ImageLoading imageLoader;
+    private ImageLoader imageLoader;
     private OnItemClickListener onItemClickListener;
 
-    public ContactListAdapter(List<User> contactList, ImageLoading imageLoading, OnItemClickListener onItemClickListener) {
+    public ContactListAdapter(List<User> contactList, ImageLoader imageLoading, OnItemClickListener onItemClickListener) {
         this.contactList = contactList;
         this.imageLoader = imageLoading;
         this.onItemClickListener = onItemClickListener;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ContactListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_contact, parent, false);
 
         return new ViewHolder(view);
@@ -51,7 +53,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         holder.txtStatus.setText(status);
         holder.txtStatus.setTextColor(color);
 
-        imageLoader.load(holder.imgAvatar, "");
+        imageLoader.load(holder.imgAvatar, AvatarHelper.getAvatarUrl(email));
     }
 
     @Override
