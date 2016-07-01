@@ -48,7 +48,6 @@ public class ContactListRepositoryImpl implements ContactListRepository {
 
     @Override
     public void subscribeToContactListEvents() {
-
         if( contactEventListener == null){
             this.contactEventListener = new
                     ChildEventListener() {
@@ -74,6 +73,7 @@ public class ContactListRepositoryImpl implements ContactListRepository {
                         public void onCancelled(DatabaseError databaseError) {}
                     }
         }
+        }
         helper.getMyContactsReference().addChildEventListener(contactEventListener);
     }
 
@@ -96,11 +96,14 @@ public class ContactListRepositoryImpl implements ContactListRepository {
 
     @Override
     public void unsubscribeToContactListEvents() {
-        //if()
+        if(contactEventListener != null){
+            helper.getMyContactsReference().removeEventListener(contactEventListener);
+        }
+
     }
 
     @Override
     public void changeConnectionStatus(boolean online) {
-
+        helper.changeUserConnectionStatus(online);
     }
 }
