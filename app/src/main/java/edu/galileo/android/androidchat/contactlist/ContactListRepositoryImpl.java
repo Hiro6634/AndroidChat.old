@@ -58,12 +58,12 @@ public class ContactListRepositoryImpl implements ContactListRepository {
 
                         @Override
                         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                            handleContact( dataSnapshot, ContactListEvent.onContactChanged);
+                            handleContact( dataSnapshot, ContactListEvent.onContactChanged );
                         }
 
                         @Override
                         public void onChildRemoved(DataSnapshot dataSnapshot) {
-                            handleContact( dataSnapshot, ContactListEvent.onContactRemoved);
+                            handleContact( dataSnapshot, ContactListEvent.onContactRemoved );
                         }
 
                         @Override
@@ -71,8 +71,7 @@ public class ContactListRepositoryImpl implements ContactListRepository {
 
                         @Override
                         public void onCancelled(DatabaseError databaseError) {}
-                    }
-        }
+                    };
         }
         helper.getMyContactsReference().addChildEventListener(contactEventListener);
     }
