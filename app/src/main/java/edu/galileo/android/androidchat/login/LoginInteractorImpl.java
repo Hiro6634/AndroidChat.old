@@ -10,8 +10,8 @@ public class LoginInteractorImpl implements LoginInteractor {
         loginRepository = new LoginRepositoryImpl();
     }
     @Override
-    public void checSession() {
-        loginRepository.checkSession();
+    public void checkAlreadyAuthenticated() {
+        loginRepository.checkAlreadyAuthenticated();
     }
 
     @Override

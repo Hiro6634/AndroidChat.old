@@ -44,17 +44,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         loginPresenter = new LoginPresenterImpl(this);
         loginPresenter.onCreate();
-        loginPresenter.checkForAuthentication();
-    }
-
-    @OnClick(R.id.btnSignin)
-    public void handleSignin() {
-
-    }
-
-    @OnClick(R.id.btnSignup)
-    public void handleSigup() {
-
+        loginPresenter.checkForAuthenticatedUser();
     }
 
     @Override

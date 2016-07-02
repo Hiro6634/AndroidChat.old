@@ -33,8 +33,6 @@ import edu.galileo.android.androidchat.login.events.LoginEvent;
  */
 public class LoginRepositoryImpl implements LoginRepository {
     private FirebaseHelper helper;
-//    private Firebase dataReference;
-//    private Firebase myUserReference;
     private DatabaseReference dataReference;
     private DatabaseReference myUserReference;
 
@@ -44,22 +42,6 @@ public class LoginRepositoryImpl implements LoginRepository {
         this.dataReference = helper.getDataReference();
         this.myUserReference = helper.getMyUserReference();
     }
-
-//    @Override
-//    public void signUp(final String email, final String password) {
-//        dataReference.createUser( email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-//            @Override
-//            public void onSuccess(Map<String, Object> stringObjectMap) {
-//                signIn(email, password);
-//                postEvent(LoginEvent.onSignUpSuccess);
-//           }
-//
-//            @Override
-//            public void onError(FirebaseError firebaseError) {
-//                postEvent(LoginEvent.onSignUpError, firebaseError.getMessage());
-//            }
-//        });
-//    }
 
     @Override
     public void signUp(final String email, final String password) {
@@ -79,40 +61,26 @@ public class LoginRepositoryImpl implements LoginRepository {
                 });
     }
 
-
-//    @Override
-//    public void signIn(String email, String password) {
-//        dataReference.authWithPassword( email, password, new Firebase.AuthResultHandler() {
-//            @Override
-//           public void onAuthenticated(AuthData authData) {
-//                myUserReference = helper.getMyUserReference();
-//                myUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        User currentUser = dataSnapshot.getValue(User.class);
-//                        if( currentUser == null){
-//                            String email = helper.getAuthUserEmail();
-//                            if( email != null){
-//                                currentUser = new User();
-//                                myUserReference.setValue(currentUser);
-//                            }
-//                        }
-//                        helper.changeUserConnectionStatus(User.ONLINE);
-//                        postEvent( LoginEvent.onSignInSuccess);
-//                    }
-//                });
-//            }
-//        });
-//    }
-
     @Override
     public void signIn(String email, String password) {
         try {
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            auth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
-                            initSignInOld();
+                            myUserReference = helper.getMyUserReference();
+                            myUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    initSignIn(dataSnapshot);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    postEvent(LoginEvent.onSignInError, databaseError.getMessage());
+                                }
+                            });
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -123,15 +91,6 @@ public class LoginRepositoryImpl implements LoginRepository {
                     });
         } catch(Exception e){
             postEvent(LoginEvent.onSignInError, e.getMessage());
-        }
-    }
-
-    @Override
-    public void checkSession() {
-        if(FirebaseAuth.getInstance().getCurrentUser() != null){
-            initSignInOld();
-        }else {
-            postEvent(LoginEvent.onFailedToRecoverSession);
         }
     }
 
@@ -166,32 +125,12 @@ public class LoginRepositoryImpl implements LoginRepository {
         postEvent(LoginEvent.onSignInSuccess);
     }
 
-    private void initSignInOld(){
-        myUserReference = FirebaseDatabase.getInstance().getReference();
-        myUserReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                User currentUser = dataSnapshot.getValue(User.class);
-
-                if( currentUser == null ){
-                    registerNewUser();
-                }
-                helper.changeUserConnectionStatus(User.ONLINE);
-                postEvent(LoginEvent.onSignInSuccess);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                postEvent(LoginEvent.onSignInError, databaseError.getMessage());
-            }
-        });
-    }
-
     private void registerNewUser() {
         String email = helper.getAuthUserEmail();
         if(email != null){
             User currentUser = new User();
             currentUser.setEmail(email);
+            currentUser.setOnline(true);
             myUserReference.setValue(currentUser);
         }
     }

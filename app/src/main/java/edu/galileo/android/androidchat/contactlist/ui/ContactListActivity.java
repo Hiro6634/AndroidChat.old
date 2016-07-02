@@ -1,11 +1,15 @@
 package edu.galileo.android.androidchat.contactlist.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -16,11 +20,13 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import edu.galileo.android.androidchat.R;
 import edu.galileo.android.androidchat.contactlist.ContactListPresenter;
+import edu.galileo.android.androidchat.contactlist.ContactListPresenterImpl;
 import edu.galileo.android.androidchat.contactlist.ui.adapters.ContactListAdapter;
 import edu.galileo.android.androidchat.contactlist.ui.adapters.OnItemClickListener;
 import edu.galileo.android.androidchat.entities.User;
 import edu.galileo.android.androidchat.lib.GlideImageLoader;
 import edu.galileo.android.androidchat.lib.ImageLoader;
+import edu.galileo.android.androidchat.login.ui.LoginActivity;
 
 public class ContactListActivity extends AppCompatActivity implements ContactListView, OnItemClickListener {
     @Bind(R.id.toolbar)
@@ -41,8 +47,28 @@ public class ContactListActivity extends AppCompatActivity implements ContactLis
 
         setupAdapter();
         setupRecyclerView();
-//        presenter.onCreate();
+        presenter = new ContactListPresenterImpl(this);
+        presenter.onCreate();
         setupToolbar();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_contactlist, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_logout){
+            presenter.signOff();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+            | Intent.FLAG_ACTIVITY_NEW_TASK
+            | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setupRecyclerView() {
@@ -52,19 +78,11 @@ public class ContactListActivity extends AppCompatActivity implements ContactLis
 
     private void setupAdapter() {
         ImageLoader loader = new GlideImageLoader(this.getApplicationContext());
-        User user = new User();
-        user.setOnline(true);
-        user.setEmail("aacs85@gmail.com");
-
-        User user1 = new User();
-        user1.setEmail("hiro.suyama@gmail.com");
-        user1.setOnline(false);
-//        adapter = new ContactListAdapter(new ArrayList<User>(), loader, this);
-        adapter = new ContactListAdapter(Arrays.asList( new User[]{user, user1}), loader, this);
+        adapter = new ContactListAdapter(new ArrayList<User>(), loader, this);
     }
 
     private void setupToolbar() {
-//        toolbar.setTitle(presenter.getCurrentUserEmail());
+        toolbar.setTitle(presenter.getCurrentUserEmail());
         setSupportActionBar(toolbar);
     }
 
@@ -72,7 +90,7 @@ public class ContactListActivity extends AppCompatActivity implements ContactLis
     protected  void addContact(){
 
     }
-/*
+
     @Override
     protected void onDestroy() {
         presenter.onDestroy();
@@ -90,29 +108,29 @@ public class ContactListActivity extends AppCompatActivity implements ContactLis
         presenter.onPause();
         super.onPause();
     }
-*/
+
     @Override
     public void onContactAdded(User user) {
-
+        adapter.add(user);
     }
 
     @Override
     public void onContactChanged(User user) {
-
+        adapter.update(user);
     }
 
     @Override
     public void onContactRemoved(User user) {
-
+        adapter.remove(user);
     }
 
     @Override
     public void onItemClick(User user) {
-
+        Toast.makeText(this, user.getEmail(), Toast.LENGTH_SHORT ).show();
     }
 
     @Override
     public void onItemLongClick(User user) {
-
+        presenter.removeContact(user.getEmail());
     }
 }
