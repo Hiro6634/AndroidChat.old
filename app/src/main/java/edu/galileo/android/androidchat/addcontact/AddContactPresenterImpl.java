@@ -52,10 +52,10 @@ public class AddContactPresenterImpl implements AddContactPresenter {
             view.showInput();
 
             if(event.isError()){
-                view.contactAdded();
+                view.contactNotAdded();
             }
             else {
-                view.contactNotAdded();
+                view.contactAdded();
             }
         }
     }
