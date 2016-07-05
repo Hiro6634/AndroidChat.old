@@ -1,8 +1,7 @@
-package edu.galileo.android.androidchat.chat;
+package edu.galileo.android.androidchat.chat.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,11 +11,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 import edu.galileo.android.androidchat.R;
-import edu.galileo.android.androidchat.chat.ui.ChatView;
+import edu.galileo.android.androidchat.chat.ui.adapters.ChatAdapter;
+import edu.galileo.android.androidchat.chat.ChatPresenter;
+import edu.galileo.android.androidchat.chat.ChatPresenterImpl;
 import edu.galileo.android.androidchat.domain.AvatarHelper;
 import edu.galileo.android.androidchat.entities.ChatMessage;
 import edu.galileo.android.androidchat.lib.GlideImageLoader;
@@ -24,20 +28,13 @@ import edu.galileo.android.androidchat.lib.ImageLoader;
 
 public class ChatActivity extends AppCompatActivity implements ChatView{
 
-    @Bind(R.id.imgAvatar)
-    CircleImageView imgAvatar;
-    @Bind(R.id.txtUser)
-    TextView txtUser;
-    @Bind(R.id.txtStatus)
-    TextView txtStatus;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.messageRecyclerView)
-    RecyclerView messageRecyclerView;
-    @Bind(R.id.editTxtMessage)
-    EditText editTxtMessage;
-    @Bind(R.id.btnSendMessage)
-    ImageButton btnSendMessage;
+    @Bind(R.id.imgAvatar)           CircleImageView imgAvatar;
+    @Bind(R.id.txtUser)             TextView txtUser;
+    @Bind(R.id.txtStatus)           TextView txtStatus;
+    @Bind(R.id.toolbar)             Toolbar toolbar;
+    @Bind(R.id.messageRecyclerView) RecyclerView messageRecyclerView;
+    @Bind(R.id.editTxtMessage)      EditText editTxtMessage;
+    @Bind(R.id.btnSendMessage)      ImageButton btnSendMessage;
 
     private ChatAdapter adapter;
     private ChatPresenter presenter;
@@ -51,20 +48,21 @@ public class ChatActivity extends AppCompatActivity implements ChatView{
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
 
-        setupAdapter();
-        setupRecyclerView();
-
         presenter = new ChatPresenterImpl(this);
         presenter.onCreate();
         setupToolBar(getIntent());
+
+        setupAdapter();
+        setupRecyclerView();
     }
 
     private void setupAdapter() {
-
+        adapter = new ChatAdapter(getApplicationContext(), new ArrayList<ChatMessage>());
     }
 
     private void setupRecyclerView() {
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        messageRecyclerView.setAdapter(adapter);
     }
 
     @Override
