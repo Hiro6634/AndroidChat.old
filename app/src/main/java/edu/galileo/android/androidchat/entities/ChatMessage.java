@@ -6,8 +6,7 @@ import com.google.firebase.database.Exclude;
 public class ChatMessage {
     private String msg;
     private String sender;
-    @Exclude
-    private boolean sendByMe;
+    @Exclude private boolean sendByMe;
 
     public ChatMessage(){}
 
