@@ -58,7 +58,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView{
     }
 
     private void setupAdapter() {
-        adapter = new ChatAdapter(getApplicationContext(), new ArrayList<ChatMessage>());
+        adapter = new ChatAdapter(this, new ArrayList<ChatMessage>());
     }
 
     private void setupRecyclerView() {

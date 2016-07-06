@@ -2,6 +2,7 @@ package edu.galileo.android.androidchat.chat.ui.adapters;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.support.v7.view.ContextThemeWrapper;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -53,6 +54,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
         }
 
         holder.txtMessage.setBackgroundColor(color);
+
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.txtMessage.getLayoutParams();
         params.gravity = gravity;
         holder.txtMessage.setLayoutParams(params);

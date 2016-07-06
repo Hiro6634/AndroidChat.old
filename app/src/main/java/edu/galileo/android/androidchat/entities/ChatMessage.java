@@ -40,7 +40,7 @@ public class ChatMessage {
 
         if( obj instanceof ChatMessage){
             ChatMessage msg = (ChatMessage) obj;
-            equal = this.sender.equals(msg.getSender()) && this.msg.equals(msg.getMsg()) && this.sendByMe == msg.isSendByMe();
+            equal = this.sender.equals(msg.getSender()) && this.msg.equals(msg.getMsg()) && this.sendByMe == msg.sendByMe;
         }
         return equal;
     }
